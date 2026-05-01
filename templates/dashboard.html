@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>Dashboard</h2>
+
+<div class="dashboard">
+
+    <!-- WELCOME CARD -->
+    <div class="card">
+        <h3>Welcome, {{ request.user.username }}</h3>
+        <p>Manage your work efficiently</p>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats">
+
+        <div class="stat-card">
+            <h3>{{ projects_count }}</h3>
+            <p>Projects</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>{{ tasks_count }}</h3>
+            <p>Tasks</p>
+        </div>
+
+    </div>
+
+    <!-- QUICK ACTIONS -->
+    <div class="card">
+        <h3>Quick Actions</h3>
+
+        <a href="{% url 'view_projects' %}"><button>View Projects</button></a>
+        <a href="{% url 'view_tasks' %}"><button>View Tasks</button></a>
+    </div>
+
+</div>
+
+{% endblock %}

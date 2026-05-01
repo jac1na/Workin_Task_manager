@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>{{ page_title }}</h2>
+
+{% if request.user.role == 'admin' %}
+    <button onclick="toggleForm()">Create Project</button>
+
+    <!-- CREATE PROJECT FORM -->
+    <div id="projectForm" style="display:none; margin-top:20px;">
+        <form method="POST">
+            {% csrf_token %}
+
+            <input type="hidden" name="action" value="create">
+
+            <input type="text" name="name" placeholder="Project Name" required><br><br>
+
+            <textarea name="description" placeholder="Description"></textarea><br><br>
+
+            <input type="date" name="due_date" required><br><br>
+
+            <h4>Select Members:</h4>
+            {% for user in users %}
+                <input type="checkbox" name="members" value="{{ user.id }}">
+                {{ user.username }} <br>
+            {% endfor %}
+
+            <br>
+            <button type="submit">Create</button>
+        </form>
+    </div>
+{% endif %}
+
+<hr>
+
+<!-- PROJECT LIST -->
+{% for project in projects %}
+    <div class="card">
+        <a href="{% url 'project_detail' project.id %}">
+        <h3>{{ project.name }}</h3></a>
+        <p>{{ project.description }}</p>
+        <p><strong>Due:</strong> {{ project.due_date }}</p>
+        <p><strong>Members:</strong> {% for member in project.members.all %}{{ member.username }}{% if not forloop.last %}, {% endif %}{% empty %}None{% endfor %}</p>
+
+
+        {% if request.user.role == 'admin' %}
+
+            <!-- EDIT BUTTON -->
+            <button onclick="toggleEdit({{ project.id }})">Edit</button>
+
+            <!-- DELETE BUTTON -->
+            <form method="POST" style="display:inline;">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="delete">
+                <input type="hidden" name="project_id" value="{{ project.id }}">
+                <button type="submit">Delete</button>
+            </form>
+
+        {% endif %}
+
+        <!-- EDIT FORM (HIDDEN) -->
+        <div id="editForm{{ project.id }}" style="display:none; margin-top:10px;">
+            <form method="POST">
+                {% csrf_token %}
+
+                <input type="hidden" name="action" value="edit">
+                <input type="hidden" name="project_id" value="{{ project.id }}"required>
+
+                <input type="text" name="name" value="{{ project.name }}"><br><br>
+
+                <textarea name="description">{{ project.description }}</textarea><br><br>
+
+                <input type="date" name="due_date" value="{{ project.due_date|date:'Y-m-d' }}" required><br><br>
+
+                <h4>Members:</h4>
+                {% for user in users %}
+                    <input type="checkbox" name="members" value="{{ user.id }}"
+                    {% if user in project.members.all %}checked{% endif %}>
+                    {{ user.username }} <br>
+                {% endfor %}
+
+                <br>
+                <button type="submit">Save</button>
+            </form>
+        </div>
+
+    </div>
+{% empty %}
+    <p>No projects found</p>
+{% endfor %}
+
+<!-- JAVASCRIPT -->
+<script>
+function toggleForm() {
+    var form = document.getElementById("projectForm");
+    form.style.display = (form.style.display === "none") ? "block" : "none";
+}
+
+function toggleEdit(id) {
+    var form = document.getElementById("editForm" + id);
+    form.style.display = (form.style.display === "none") ? "block" : "none";
+}
+</script>
+
+{% endblock %}

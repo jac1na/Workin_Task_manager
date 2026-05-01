@@ -1,0 +1,264 @@
+:root {
+    --primary: #8B3A1A;
+    --secondary: #C68B59;
+    --background: #F5E6C8;
+    --text: #3a2a1f;
+}
+
+/* BODY */
+body {
+    margin: 0;
+    font-family: Arial;
+    background: var(--background);
+    color: var(--text);
+}
+
+/* NAVBAR */
+nav {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 10px 20px;
+
+    background: rgba(139, 58, 26, 0.9);
+    backdrop-filter: blur(10px);
+
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+}
+
+nav a {
+    color: white;
+    margin-left: 15px;
+    text-decoration: none;
+}
+
+.nav-brand {
+    display: flex;
+    flex-direction: column;
+}
+
+.nav-brand h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+}
+
+.nav-slogan {
+    font-size: 0.7rem;
+    opacity: 0.8;
+}
+
+/* CONTAINER */
+.container {
+    padding: 20px;
+}
+
+/* CARD */
+.card {
+    background: white;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+}
+
+/* BUTTON */
+button {
+    background: var(--secondary);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    cursor: pointer;
+    
+}
+/* HERO SECTION */
+.hero {
+    height: 90vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    background: linear-gradient(
+        rgba(139, 58, 26, 0.85),
+        rgba(198, 139, 89, 0.85)
+    );
+    color: white;
+}
+
+
+/* TITLE */
+.hero h1 {
+    font-size: 60px;
+    margin: 0;
+    text-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+}
+
+/* TAGLINE */
+.hero p {
+    font-size: 20px;
+    margin: 15px 0;
+}
+
+/* BUTTONS */
+.buttons button {
+    margin: 0px;
+    padding: 10px 25px;
+}
+
+/* OUTLINE BUTTON */
+button.outline {
+    background: transparent;
+    border: 2px solid white;
+}
+h1, h2 {
+    font-family: 'Playfair Display', serif;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+}
+.buttons {
+    display: flex;
+    gap: 15px;           /* spacing between buttons */
+    justify-content: center;
+}
+/* FEATURE SECTION */
+.features {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 40px;
+}
+
+/* GLASS CARD STYLE */
+.feature-card {
+    width: 250px;
+    padding: 25px;
+    border-radius: 10px;
+
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+
+    text-align: center;
+}
+
+/* HOVER EFFECT */
+.feature-card:hover {
+    transform: translateY(-5px);
+    transition: 0.3s;
+}
+/* FORM PAGE CENTERING */
+.form-container {
+    height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* FORM CARD */
+.form-card {
+    width: 350px;
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+/* INPUT FIELDS */
+.form-card input,
+.form-card select {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+/* BUTTON FULL WIDTH */
+.form-card button {
+    width: 100%;
+    margin-top: 10px;
+}
+
+/* LINKS */
+.form-card a {
+    color: var(--primary);
+    text-decoration: none;
+}
+
+/* DASHBOARD LAYOUT */
+.dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* STATS ROW */
+.stats {
+    display: flex;
+    gap: 20px;
+}
+
+/* STAT CARD */
+.stat-card {
+    flex: 1;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+/* NUMBER STYLE */
+.stat-card h3 {
+    font-size: 30px;
+    margin: 0;
+}
+.stat-card:nth-child(1) {
+    background: #8B3A1A;
+    color: white;
+}
+
+.stat-card:nth-child(2) {
+    background: #C68B59;
+    color: white;
+}
+
+.footer {
+    text-align: center;
+    padding: 12px;
+    font-size: 13px;
+    color: #666;
+
+    border-top: 1px solid #ddd;
+    margin-top: 30px;
+}
+nav a:hover::after {
+    width: 100%;
+}
+
+nav a:hover {
+    color: var(--secondary);
+}
+
+/* LOGOUT STYLE */
+.logout {
+    background: var(--secondary);
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.logout:hover {
+    background: white;
+    color: var(--primary);
+}

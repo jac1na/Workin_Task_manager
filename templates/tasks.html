@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>{{ page_title }}</h2>
+
+
+{% for task in tasks %}
+    <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:1rem;">
+            <strong>{{ task.title }}</strong>
+            <button type="button" onclick="toggleDetails('task-details-{{ task.id }}')">More</button>
+        </div>
+        <p style="margin:0.5rem 0 0; color:#555;">Project: {{ task.project.name }} • Assigned to: {{ task.assigned_to }}</p>
+        <p style="margin:0.25rem 0 0; color:#777;">Status: {{ task.status }} • Due: {{ task.due_date }}</p>
+        <p style="margin:0.25rem 0 0; color:#777;">Subtasks: {{ task.completed_subtasks_count }} / {{ task.subtask_count }}</p>
+
+        <div id="task-details-{{ task.id }}" style="display:none; margin-top:1rem; padding:0.75rem; border:1px solid #ddd; border-radius:8px; background:#fafafa;">
+            <p><strong>Description:</strong> {{ task.description }}</p>
+            <div style="margin:0.75rem 0;">
+                <strong>Checklist</strong>
+                <ol style="list-style: decimal inside; margin-left:0; padding-left:0;">
+                    {% for subtask in task.subtasks.all %}
+                        <li style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.35rem;">
+                            {% if request.user == task.assigned_to or request.user.role == 'admin' %}
+                            <form method="POST" style="display:inline; margin:0;">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="update_subtask">
+                                <input type="hidden" name="subtask_id" value="{{ subtask.id }}">
+                                <input type="hidden" name="completed" value="{% if subtask.completed %}false{% else %}true{% endif %}">
+                                <button type="submit" style="background:none; border:none; padding:0; cursor:pointer; color:{% if subtask.completed %}green{% else %}gray{% endif %}; font-size:1rem;">{% if subtask.completed %}✓{% else %}○{% endif %}</button>
+                            </form>
+                            {% else %}
+                                <span style="color:{% if subtask.completed %}green{% else %}gray{% endif %};">{% if subtask.completed %}✓{% else %}○{% endif %}</span>
+                            {% endif %}
+                            <span{% if subtask.completed %} style="text-decoration: line-through; color:#555;"{% endif %}>{{ subtask.title }}</span>
+                        </li>
+                    {% empty %}
+                        <li>No subtasks yet</li>
+                    {% endfor %}
+                </ol>
+            </div>
+            {% if request.user == task.assigned_to %}
+                <form method="POST" style="margin-top:10px; display:flex; gap:0.75rem; align-items:center; flex-wrap:wrap;">
+                    {% csrf_token %}
+                    <input type="hidden" name="task_id" value="{{ task.id }}">
+                    <label>
+                        Status:
+                        <select name="status">
+                            <option value="pending"{% if task.status == 'pending' %} selected{% endif %}>Pending</option>
+                            <option value="in_progress"{% if task.status == 'in_progress' %} selected{% endif %}>In Progress</option>
+                            <option value="done"{% if task.status == 'done' %} selected{% endif %}>Done</option>
+                        </select>
+                    </label>
+                    <button type="submit">Update</button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+{% empty %}
+    <p>No tasks available</p>
+{% endfor %}
+
+<script>
+function toggleDetails(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.style.display = el.style.display === 'none' || el.style.display === '' ? 'block' : 'none';
+}
+</script>
+
+{% endblock %}

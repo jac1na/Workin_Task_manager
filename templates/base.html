@@ -1,0 +1,43 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Workln</title>
+
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&family=Inter&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+
+    <nav>
+    <div class="nav-brand">
+        <h2>Workln</h2>
+        <span class="nav-slogan">Stay organized</span>
+    </div>
+
+    <div class="nav-links">
+        {% if request.path != '/' %}
+        <a href="{% url 'home' %}" title="Home"><i class="fas fa-home"></i></a>
+        {% endif %}
+        <a href="{% url 'dashboard' %}">Dashboard</a>
+        <a href="{% url 'projects' %}">My Projects</a>
+        <a href="{% url 'tasks' %}">My Tasks</a>
+        {% if request.user.is_authenticated %}
+            <a href="{% url 'logout' %}" class="logout">Logout</a>
+        {% endif %}
+    </div>
+</nav>
+
+    <div class="container">
+        {% block content %}
+        {% endblock %}
+    </div>
+    <footer class="footer">
+    <p>© 2026 WorkIn. Built for better workflow.</p>
+</footer>
+
+</body>
+</html>
