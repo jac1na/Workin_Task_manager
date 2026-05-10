@@ -12,7 +12,17 @@
 
             <input type="text" name="username" placeholder="Username">
             <input type="email" name="email" placeholder="Email">
+            
+            <input type="tel" name="mobile_number" placeholder="Mobile Number (e.g. +91XXXXXXXXXX)">
             <input type="password" name="password" placeholder="Password">
+
+            <select id="job_title_choice" name="job_title_choice" onchange="toggleJobTitleOther()" required>
+                <option value="front_end">Front end developer</option>
+                <option value="back_end">Back end developer</option>
+                <option value="other">Other</option>
+            </select>
+
+            <input type="text" id="job_title_other" name="job_title_other" placeholder="Enter your job title" style="display:none;" />
 
             <select name="role">
                 <option value="member">Member</option>
@@ -21,6 +31,20 @@
 
             <button type="submit">Create Account</button>
         </form>
+
+        <script>
+            function toggleJobTitleOther() {
+                var choice = document.getElementById('job_title_choice');
+                var other = document.getElementById('job_title_other');
+                other.style.display = choice.value === 'other' ? 'block' : 'none';
+                if (choice.value !== 'other') {
+                    other.value = '';
+                }
+            }
+            document.addEventListener('DOMContentLoaded', function() {
+                toggleJobTitleOther();
+            });
+        </script>
 
         <p>Already have an account? <a href="/login/">Login</a></p>
     </div>

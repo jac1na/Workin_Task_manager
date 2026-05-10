@@ -33,6 +33,9 @@
 
         <a href="{% url 'view_projects' %}"><button>View Projects</button></a>
         <a href="{% url 'view_tasks' %}"><button>View Tasks</button></a>
+        {% if request.user.role == 'admin' %}
+        <a href="{% url 'member_list' %}"><button>View Members</button></a>
+        {% endif %}
     </div>
 
 </div>

@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="max-width:750px; margin:0 auto;">
+
+    <!-- PROFILE SECTION -->
+    <div class="card" style="display:flex; align-items:center; gap:1.5rem; margin-bottom:1.5rem;">
+        {% if member.profile_picture %}
+            <img src="{{ member.profile_picture.url }}"
+                 style="width:90px; height:90px; border-radius:50%; object-fit:cover; flex-shrink:0;">
+        {% else %}
+            <div style="width:90px; height:90px; border-radius:50%; background:#ccc; display:flex;
+                        align-items:center; justify-content:center; font-size:2.2rem; flex-shrink:0;">👤</div>
+        {% endif %}
+        <div>
+            <h2 style="margin:0;">{{ member.username }}</h2>
+            <p style="margin:0.2rem 0; color:#666;">{{ member.job_title|default:"No job title" }}</p>
+            <p style="margin:0.2rem 0; color:#888; font-size:0.9rem;">{{ member.email }}</p>
+            <p style="margin:0.2rem 0; color:#888; font-size:0.9rem;">📱 {{ member.mobile_number|default:"No mobile" }}</p>
+            <span style="background:#e0e7ff; color:#3730a3; padding:2px 10px; border-radius:20px; font-size:0.85rem;">
+                {{ member.role|capfirst }}
+            </span>
+        </div>
+    </div>
+
+    <!-- PROJECTS SECTION -->
+    <div class="card" style="margin-bottom:1.5rem;">
+        <h3>Projects ({{ member_projects.count }})</h3>
+        {% if member_projects %}
+            <ul style="list-style:none; padding:0; margin:0;">
+            {% for project in member_projects %}
+                <li style="padding:0.5rem 0; border-bottom:1px solid #eee; display:flex; justify-content:space-between;">
+                    <span>
+                        <a href="{% url 'project_detail' project.id %}" style="font-weight:600;">{{ project.name }}</a>
+                    </span>
+                    <span style="color:#888; font-size:0.85rem;">Due: {{ project.due_date|default:"—" }}</span>
+                </li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p style="color:#aaa;">Not assigned to any projects.</p>
+        {% endif %}
+    </div>
+
+    <!-- TASKS SECTION -->
+    <div class="card">
+        <h3>Tasks ({{ member_tasks.count }})</h3>
+        {% if member_tasks %}
+            <ul style="list-style:none; padding:0; margin:0;">
+            {% for task in member_tasks %}
+                <li style="padding:0.5rem 0; border-bottom:1px solid #eee;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <strong>{{ task.title }}</strong>
+                        <span style="font-size:0.82rem; padding:2px 8px; border-radius:12px;
+                            background:{% if task.status == 'done' %}#d1fae5{% elif task.status == 'in_progress' %}#fef3c7{% else %}#fee2e2{% endif %};
+                            color:{% if task.status == 'done' %}#065f46{% elif task.status == 'in_progress' %}#92400e{% else %}#991b1b{% endif %};">
+                            {{ task.status|capfirst }}
+                        </span>
+                    </div>
+                    <p style="margin:0.2rem 0 0; color:#888; font-size:0.85rem;">
+                        📁 {{ task.project.name }} &nbsp;·&nbsp; Due: {{ task.due_date }}
+                    </p>
+                </li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p style="color:#aaa;">No tasks assigned.</p>
+        {% endif %}
+    </div>
+
+    <br>
+    <a href="{% url 'member_list' %}"><button type="button">← Back to Members</button></a>
+</div>
+{% endblock %}

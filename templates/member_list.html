@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="max-width:700px; margin:0 auto;">
+    <h2>All Members</h2>
+    <p style="color:#666;">Click on a member to view their full profile, tasks and projects.</p>
+
+    {% if members %}
+        <div style="display:flex; flex-direction:column; gap:0.75rem; margin-top:1.5rem;">
+        {% for member in members %}
+            <a href="{% url 'member_detail' member.id %}" style="text-decoration:none; color:inherit;">
+                <div class="card" style="display:flex; align-items:center; gap:1rem; cursor:pointer; transition:box-shadow 0.2s;">
+                    {% if member.profile_picture %}
+                        <img src="{{ member.profile_picture.url }}"
+                             style="width:50px; height:50px; border-radius:50%; object-fit:cover; flex-shrink:0;">
+                    {% else %}
+                        <div style="width:50px; height:50px; border-radius:50%; background:#ccc; display:flex;
+                                    align-items:center; justify-content:center; font-size:1.4rem; flex-shrink:0;">👤</div>
+                    {% endif %}
+                    <div>
+                        <strong style="font-size:1.05rem;">{{ member.username }}</strong>
+                        <p style="margin:0.1rem 0 0; color:#888; font-size:0.9rem;">
+                            {{ member.job_title|default:"No job title" }} &nbsp;·&nbsp; {{ member.email }}
+                        </p>
+                    </div>
+                    <span style="margin-left:auto; color:#aaa; font-size:1.2rem;">›</span>
+                </div>
+            </a>
+        {% endfor %}
+        </div>
+    {% else %}
+        <p>No members found.</p>
+    {% endif %}
+
+    <br>
+    <a href="{% url 'dashboard' %}"><button type="button">← Back to Dashboard</button></a>
+</div>
+{% endblock %}

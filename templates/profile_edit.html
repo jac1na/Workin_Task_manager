@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="form-container">
+  <div class="form-card">
+    <h2>Edit Profile</h2>
+
+    {% if messages %}
+      {% for message in messages %}
+        <p style="color:green;">{{ message }}</p>
+      {% endfor %}
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <input type="text" name="first_name" placeholder="First Name" value="{{ user.first_name }}">
+      <input type="text" name="last_name" placeholder="Last Name" value="{{ user.last_name }}">
+      <input type="email" name="email" placeholder="Email" value="{{ user.email }}">
+      <input type="tel" name="mobile_number" placeholder="Mobile Number" value="{{ user.mobile_number }}">
+      <label>Job Title:</label>
+      <select id="job_title_choice" name="job_title_choice" onchange="toggleJobTitleOther()">
+        <option value="front_end" {% if user.job_title == 'front_end' %}selected{% endif %}>Front End Developer</option>
+        <option value="back_end" {% if user.job_title == 'back_end' %}selected{% endif %}>Back End Developer</option>
+        <option value="other" {% if user.job_title != 'front_end' and user.job_title != 'back_end' and user.job_title %}selected{% endif %}>Other</option>
+      </select>
+      <input type="text" id="job_title_other" name="job_title_other" placeholder="Enter your job title"
+             value="{% if user.job_title != 'front_end' and user.job_title != 'back_end' %}{{ user.job_title }}{% endif %}"
+             style="display:none;">
+
+      <label>Profile Picture:</label>
+      {% if user.profile_picture %}
+        <img src="{{ user.profile_picture.url }}" alt="Current" style="width:60px; height:60px; border-radius:50%; object-fit:cover;"><br>
+      {% endif %}
+      <input type="file" name="profile_picture" accept="image/*">
+
+      <input type="password" name="new_password" placeholder="New Password (leave blank to keep current)">
+
+      <button type="submit">Save Changes</button>
+      <a href="{% url 'profile' %}"><button type="button">Cancel</button></a>
+    </form>
+  </div>
+</div>
+<script>
+function toggleJobTitleOther() {
+    var choice = document.getElementById('job_title_choice');
+    var other = document.getElementById('job_title_other');
+    other.style.display = choice.value === 'other' ? 'block' : 'none';
+}
+document.addEventListener('DOMContentLoaded', toggleJobTitleOther);
+</script>
+{% endblock %}

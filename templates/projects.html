@@ -27,7 +27,7 @@
             {% endfor %}
 
             <br>
-            <button type="submit">Create</button>
+            <button type="submit" onclick="return checkMembers(this.form)">Create</button>
         </form>
     </div>
 {% endif %}
@@ -81,7 +81,7 @@
                 {% endfor %}
 
                 <br>
-                <button type="submit">Save</button>
+                <button type="submit" onclick="return checkMembers(this.form)">Save</button>
             </form>
         </div>
 
@@ -100,6 +100,14 @@ function toggleForm() {
 function toggleEdit(id) {
     var form = document.getElementById("editForm" + id);
     form.style.display = (form.style.display === "none") ? "block" : "none";
+}
+function checkMembers(form) {
+    const checked = form.querySelectorAll('input[name="members"]:checked');
+    if (checked.length === 0) {
+        alert('Please select at least one member.');
+        return false;
+    }
+    return true;
 }
 </script>
 

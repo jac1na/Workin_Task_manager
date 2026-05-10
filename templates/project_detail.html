@@ -15,6 +15,7 @@
 <p>Due: {{ project.due_date }}</p>
 <p><strong>Members:</strong> {% for member in project.members.all %}{{ member.username }}{% if not forloop.last %}, {% endif %}{% empty %}None{% endfor %}</p>
 
+
 <hr>
 
 <h3>Tasks</h3>
@@ -96,31 +97,58 @@
         {% endif %}
 
         <!-- UPDATE STATUS -->
+        
+        
+        <div style="display:flex; gap:0.5rem; margin-top:0.5rem; flex-wrap:wrap;">
+            {% if request.user.role == 'admin' or request.user == task.assigned_to %}
+            <button type="button" onclick="toggleForm('edit-task-{{ task.id }}')">Edit</button>
+            {% endif %}
+            {% if request.user.role == 'admin' %}
+            <form method="POST" style="display:inline;">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="delete_task">
+                <input type="hidden" name="task_id" value="{{ task.id }}">
+                <button type="submit" style="background:#c0392b; color:white;">🗑 Delete</button>
+            </form>
+            {% endif %}
+        </div>
+
+        <!-- EDIT TASK FORM (hidden by default) -->
         {% if request.user.role == 'admin' or request.user == task.assigned_to %}
-        <form method="POST">
-            {% csrf_token %}
-            <input type="hidden" name="action" value="update_task">
-            <input type="hidden" name="task_id" value="{{ task.id }}">
+        <div id="edit-task-{{ task.id }}" style="display:none; margin-top:1rem; padding:1rem; border:1px solid #ddd; border-radius:8px; background:#f9f9f9;">
+            <h5 style="margin-bottom:0.75rem;">Edit Task</h5>
+            <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="update_task">
+                <input type="hidden" name="task_id" value="{{ task.id }}">
 
-            <select name="status">
-                <option value="pending">Pending</option>
-                <option value="in_progress">In Progress</option>
-                <option value="done">Done</option>
-            </select>
+                {% if request.user.role == 'admin' %}
+                    <input type="text" name="title" value="{{ task.title }}" required>
+                    <textarea name="description">{{ task.description }}</textarea>
+                    <input type="date" name="due_date" value="{{ task.due_date|date:'Y-m-d' }}"
+                        {% if project.due_date %}max="{{ project.due_date|date:'Y-m-d' }}"{% endif %}>
+                    <select name="assigned_to">
+                        {% for u in users %}
+                            <option value="{{ u.id }}" {% if u == task.assigned_to %}selected{% endif %}>{{ u.username }}</option>
+                        {% endfor %}
+                    </select>
+                {% endif %}
 
-            <button type="submit">Update</button>
-        </form>
+                <select name="status">
+                    <option value="pending" {% if task.status == 'pending' %}selected{% endif %}>Pending</option>
+                    <option value="in_progress" {% if task.status == 'in_progress' %}selected{% endif %}>In Progress</option>
+                    <option value="done" {% if task.status == 'done' %}selected{% endif %}>Done</option>
+                </select>
+
+                <div style="display:flex; gap:0.5rem; margin-top:0.5rem;">
+                    <button type="submit">Save</button>
+                    <button type="button" onclick="toggleForm('edit-task-{{ task.id }}')">Cancel</button>
+                </div>
+            </form>
+        </div>
         {% endif %}
 
-        <!-- DELETE (ADMIN ONLY) -->
-        {% if request.user.role == 'admin' %}
-        <form method="POST">
-            {% csrf_token %}
-            <input type="hidden" name="action" value="delete_task">
-            <input type="hidden" name="task_id" value="{{ task.id }}">
-            <button type="submit">Delete</button>
-        </form>
-        {% endif %}
+        
 
     </div>
 {% empty %}
