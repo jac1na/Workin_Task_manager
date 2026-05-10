@@ -85,6 +85,11 @@ def profile_edit(request):
         user.last_name = request.POST.get('last_name', '')
         user.email = request.POST.get('email', '')
         user.mobile_number = request.POST.get('mobile_number', '')
+        job_title_choice = request.POST.get('job_title_choice', '')
+        if job_title_choice == 'other':
+            user.job_title = request.POST.get('job_title_other', '')
+        else:
+            user.job_title = job_title_choice
 
         if 'profile_picture' in request.FILES:
             user.profile_picture = request.FILES['profile_picture']

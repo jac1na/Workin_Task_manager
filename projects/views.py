@@ -20,7 +20,7 @@ def project_list(request):
 
         action = request.POST.get('action')
 
-        # 🟢 CREATE PROJECT
+        #  CREATE PROJECT
         if action == 'create' and user.role == 'admin':
             name = request.POST['name']
             description = request.POST['description']
@@ -36,20 +36,29 @@ def project_list(request):
 
             project.members.set(members)
 
-        # 🟡 EDIT PROJECT
+        #  EDIT PROJECT
         elif action == 'edit' and user.role == 'admin':
             project = Project.objects.get(id=request.POST['project_id'])
+            new_members = request.POST.getlist('members')
+
+            if not new_members:
+                messages.error(request, 'Please select at least one project member.')
+                return redirect('projects')
 
             project.name = request.POST['name']
             project.description = request.POST['description']
             project.due_date = request.POST['due_date']
-
-            members = request.POST.getlist('members')
-            project.members.set(members)
-
             project.save()
 
-        # 🔴 DELETE PROJECT
+            removed_member_ids = [
+                m.id for m in project.members.all()
+                if str(m.id) not in new_members
+            ]
+            if removed_member_ids:
+                Task.objects.filter(project=project, assigned_to_id__in=removed_member_ids).delete()
+
+            project.members.set(new_members)
+        #  DELETE PROJECT
         elif action == 'delete' and user.role == 'admin':
             project = Project.objects.get(id=request.POST['project_id'])
             project.delete()
@@ -71,6 +80,38 @@ def view_projects(request):
         projects = Project.objects.filter(members=user)
 
     users = User.objects.all()
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+
+        if action == 'edit' and user.role == 'admin':
+            project = Project.objects.get(id=request.POST['project_id'])
+            new_members = request.POST.getlist('members')
+
+            if not new_members:
+                messages.error(request, 'Please select at least one project member.')
+                return redirect('view_projects')
+
+            project.name = request.POST['name']
+            project.description = request.POST['description']
+            project.due_date = request.POST['due_date']
+            project.save()
+
+            removed_member_ids = [
+                m.id for m in project.members.all()
+                if str(m.id) not in new_members
+            ]
+            if removed_member_ids:
+                Task.objects.filter(project=project, assigned_to_id__in=removed_member_ids).delete()
+
+            project.members.set(new_members)
+            return redirect('view_projects')
+
+        if action == 'delete' and user.role == 'admin':
+            project = Project.objects.get(id=request.POST['project_id'])
+            project.delete()
+            return redirect('view_projects')
+
     return render(request, 'projects.html', {
         'projects': projects,
         'users': users,
